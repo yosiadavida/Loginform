@@ -37,7 +37,7 @@ class LoginComp extends React.Component {
       this.setState ({ lockout: true });
       const time = new Date().getTime() + 30 * 1000;
       this.setState({ lockoutTime: time });
-      set Timeout(() => {
+      setTimeout(() => {
         this.setState({ lockout: false, failedAttempts: 0 });
       }, 30 * 1000 );
       }
