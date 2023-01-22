@@ -31,7 +31,7 @@ class LoginComp extends React.Component {
     const { username, password } = event.target.elements;
     if (username.value !== "validausername" || password.value !== "validatepassword") {
     this.setState((prevState) => {
-        return { failedAttempts: prevState.failed Attempts + 1 }
+        return { failedAttempts: prevState.failedAttempts + 1 }
     });
     if (this.state.failedAttempts >= 3){
       this.setState ({ lockout: true });
