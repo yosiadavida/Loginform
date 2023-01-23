@@ -14,10 +14,13 @@ class LoginComp extends React.Component {
       isVerified: false,
       failedAttempts: 0,
       lockout: false,
-      lockoutTime: null
+      lockoutTime: null,
+      inactive: false,
+      inactivityTimeout: null
     };
     this.handleOnChange = this.handleOnChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleInactivity = this.handleInactivity.bind(this);
   }
   
   handleOnChange(value) {
@@ -46,6 +49,29 @@ class LoginComp extends React.Component {
     }
   }
   
+  handleInactivity() {
+    // Set the inactive state to true
+    this.setState({ inactive: true });
+    // Clear the inactivity timeout if it has been set
+    if (this.state.inactivityTimeout) {
+        clearTimeout(this.state.inactivityTimeout);
+    }
+    // Set the inactivity timeout to 30 seconds
+    this.setState({ inactivityTimeout: setTimeout(() => {
+        this.setState({ inactive: false });
+    }, 30 * 1000) });
+  }
+
+  componentDidMount() {
+    document.addEventListener("mousemove", this.handleInactivity);
+    document.addEventListener("keypress", this.handleInactivity);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("mousemove", this.handleInactivity);
+    document.removeEventListener("keypress", this.handleInactivity);
+  }
+  
   render() {
     return (
       <div className="LoginComp"> 
@@ -53,7 +79,13 @@ class LoginComp extends React.Component {
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
             User Login
           </button>
-
+          {this.state.inactive &&
+            <div class="inactivity-popup">
+              <p>You have been inactive for 30 seconds.</p>
+              <button class="btn btn-danger" onClick={() => {this.setState({ inactive: false });
+              }}>Stop</button>
+            </div>
+          }
           <div class="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
